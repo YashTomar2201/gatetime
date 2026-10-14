@@ -1,0 +1,5 @@
+# c17 input vectors, bit order = INPUT declaration order: 1 2 3 6 7
+00000
+11111
+10100   # 22=1 23=0
+01001

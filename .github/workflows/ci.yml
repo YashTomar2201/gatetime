@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: gcc (Release, warnings are errors)
+            cxx: g++
+            cmake_args: -DGATETIME_WERROR=ON
+          - name: clang (Release, warnings are errors)
+            cxx: clang++
+            cmake_args: -DGATETIME_WERROR=ON
+          - name: gcc + AddressSanitizer + UBSan
+            cxx: g++
+            cmake_args: -DGATETIME_SANITIZE=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          - name: clang + AddressSanitizer + UBSan
+            cxx: clang++
+            cmake_args: -DGATETIME_SANITIZE=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} ${{ matrix.cmake_args }}
+      - name: Build
+        run: cmake --build build
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+      - name: Smoke-run the CLI on the bundled circuits
+        run: |
+          ./build/gatetime report bench/c17.bench --period 3
+          ./build/gatetime report bench/s27.bench --top 3
+          ./build/gatetime eco bench/c17.bench --period 3 --set 16=2.5 || test $? -eq 1

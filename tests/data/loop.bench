@@ -1,0 +1,7 @@
+# A combinational loop: x -> y -> z -> x. Parses fine, rejected by the topo pass.
+INPUT(a)
+INPUT(b)
+OUTPUT(z)
+x = AND(a, z)
+y = NOT(x)
+z = OR(y, b)

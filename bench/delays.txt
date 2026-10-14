@@ -1,0 +1,20 @@
+# Delay table for GateTime (arbitrary time units). One `<KEY> <value>` per line.
+#
+# KEY is a gate type (AND NAND OR NOR XOR XNOR NOT BUFF), or one of:
+#   DFF    clock-to-Q delay of a flip-flop output
+#   SETUP  setup time every flop D pin needs before the clock edge
+#   LOAD   extra delay added per fanout of a gate (0 = off)
+# Keys not listed keep the built-in defaults. Values must be finite and >= 0.
+#
+# type  delay
+NOT    0.5
+BUFF   0.6
+NAND   1.0
+NOR    1.1
+AND    1.4
+OR     1.5
+XOR    2.0
+XNOR   2.0
+DFF    0.8
+SETUP  0.2
+LOAD   0
